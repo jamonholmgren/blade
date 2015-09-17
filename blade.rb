@@ -86,6 +86,11 @@ class Game
   protected
 
   def show_inventory
+    @data[:inventory] = {
+      daggers: 1,
+      cloaks: 1,
+    }
+
     puts "INVENTORY"
     puts "You are carrying: Nothing (4x)"
   end
@@ -113,7 +118,6 @@ class Game
   private
 
   def go(place)
-    @data ||= {}
     @data[:location] = place
   end
 
@@ -124,11 +128,11 @@ class Game
       puts "[#{k}] #{questions[k]}"
     end
     print "¶ #{@data[:location]} • "
-    i = gets[0].to_sym
+    i = gets.chomp[0].to_sym
     i == :q and leave_game
     i == :i and show_inventory
     yield i
-    puts
+    puts ""
   end
 
   def ask_test(questions)
@@ -179,7 +183,10 @@ class Game
     assert data[:location], :intro
     step
     assert data[:location], :clearing
-    # step(test_answer: :n)
+    step(test_answer: :n)
+    assert data[:location], :cabin_outside
+    step(test_answer: :n)
+    assert data[:location], :todo
     step
 
     test_summary
